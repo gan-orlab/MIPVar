@@ -2,7 +2,7 @@
 
 read BASE_DIR gene_list gene_bed output_name sample_list cohort_folder core <<< $@
 
-SCRIPT_FOLDER=~/runs/eyu8/data/vladScript/Scripts
+SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 0 START"
 bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.sh $BASE_DIR $gene_list 
 echo "STEP 1 START"

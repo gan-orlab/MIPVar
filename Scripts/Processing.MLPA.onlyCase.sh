@@ -2,7 +2,7 @@
 
 read BASE_DIR gene_list gene_bed output_name sample_list core <<< $@
 
-SCRIPT_FOLDER=~/runs/eyu8/data/vladScript/Scripts
+SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 1 START"
 bash $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 echo "STEP 3 START"

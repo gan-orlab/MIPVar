@@ -5,7 +5,7 @@ RUN_DIR=$1
 gene_list=$2
 core=$4
 genes=$(cat $gene_list)
-seg_script=~/runs/eyu8/data/vladScript/Scripts/generic.seg_command.sh
+seg_script=~/runs/eyu8/data/MIPVar/Scripts/generic.seg_command.sh
 gatk=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
 
@@ -66,7 +66,7 @@ for cohort in $cohorts; do
     java -Xmx4g -jar $gatk -T CombineVariants -R $REF $(printf " -V:%s %s " $(for i in $vcfs; do echo -e "$(basename $i|cut -d. -f1)\t$i"; done)) -o $vcf_old --genotypemergeoption PRIORITIZE --rod_priority_list $(for i in $vcfs; do basename $i|cut -d. -f1; done|tr '\n' ','|sed 's/,$//g') --log_to_file $seg_dir/$run_prefix.CombineVariants.log 2>/dev/null
     echo ......spliting vcf
     java -Xmx4g -jar $gatk -T LeftAlignAndTrimVariants -R $REF -V $vcf_old -o $vcf_old2 --splitMultiallelics --log_to_file $seg_dir/$run_prefix.SplitMulti.log 2>/dev/null
-    bash ~/runs/eyu8/data/vladScript/Scripts/Processing.step03.annotateVariants.new.sh $vcf_old2 $core $vcf
+    bash ~/runs/eyu8/data/MIPVar/Scripts/Processing.step03.annotateVariants.new.sh $vcf_old2 $core $vcf
     echo ......creating seg script
     echo -e "export run=PD.$cohort.$DP\nexport VCF_LIST=\"$vcf\"\ncd $seg_dir\nbash $seg_script" > $local_seg
     echo ......running seg script
