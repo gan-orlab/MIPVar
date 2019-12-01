@@ -29,7 +29,7 @@ do
         echo "STEP 9 START DP" $dp "COHORT" $cohort "GENE" $gene;
         bash $SCRIPT_FOLDER/Processing.step09.filterPlink_and_LogisticRegression.sh $BASE_DIR $gene $cohort $dp $cohort_folder;
         echo "STEP 10 START DP" $dp "COHORT" $cohort "GENE" $gene;
-        bash $SCRIPT_FOLDER/Processing.step10.finalSelection.sh $BASE_DIR $gene $cohort $dp
+        bash $SCRIPT_FOLDER/Processing.step10.finalSelection.old.sh $BASE_DIR $gene $cohort $dp
     done
 done
 

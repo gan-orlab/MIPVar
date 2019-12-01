@@ -6,7 +6,7 @@ SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 0 START"
 bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.sh $BASE_DIR $gene_list 
 echo "STEP 1 START"
-bash $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+bash $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 echo "STEP 2 START"
 bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 
 echo "STEP 3 START"
@@ -31,7 +31,7 @@ do
             echo "STEP 9 START DP" $dp "COHORT" $cohort "GENE" $gene;
             bash $SCRIPT_FOLDER/Processing.step09.filterPlink_and_LogisticRegression.sh $BASE_DIR $gene $cohort $dp $cohort_folder;
             echo "STEP 10 START DP" $dp "COHORT" $cohort "GENE" $gene;
-            bash $SCRIPT_FOLDER/Processing.step10.finalSelection.old.sh $BASE_DIR $gene $cohort $dp
+            bash $SCRIPT_FOLDER/Processing.step10.finalSelection.sh $BASE_DIR $gene $cohort $dp
         done
     done
 done

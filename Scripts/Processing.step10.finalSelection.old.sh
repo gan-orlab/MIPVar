@@ -10,31 +10,12 @@ GATK37=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/di
 
 #INTERVALS=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}.final.intervals
 INTERVALS=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}_geno10_ind10_hwe_testmiss.vcf
-SAMPLE_LIST=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}.geno10.indvtoremove
+SAMPLE_LIST=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}.final.samples
 vcf=$BASE_DIR/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 if [[ ! -s $INTERVALS ]]; then echo "ERROR: intervals list $INTERVALS empty or does not exist"; exit 42; fi
 if [[ ! -s $SAMPLE_LIST ]]; then echo "ERROR: sample list $SAMPLE_LIST empty or does not exist"; exit 42; fi
 if [[ ! -s $vcf ]]; then echo "ERROR: input vcf empty or does not exist; name should be $vcf"; exit 42; fi
 
-temp=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.temp.vcf
 output=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.final.vcf
 
-java -Xmx4g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $temp -L $INTERVALS -env 
-
-awk -v sample=$(cut -d ' ' -f 1 $SAMPLE_LIST | sed -z 's/\n/,/g') '
-    BEGIN{
-        FS=OFS="\t";
-        split(sample,sDict,",");
-        for (i in sDict) sarray[sDict[i]] = ""
-    }
-    {
-        if ($0~/^##/) {print; next}
-        if ($0~/^#CHROM/) {split($0,colnames,"\t"); print; next}
-        for (i=10; i<=NF; i++) {
-            if ($i~/^\.\/\./) continue
-            if (colnames[i] in sarray){
-                $i = "./."
-            }
-        }
-        print $0
-    }' $temp > $output
+java -Xmx4g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $output -L $INTERVALS -sf $SAMPLE_LIST -env --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES 

@@ -29,9 +29,9 @@ do
         echo "STEP 9 START DP" $dp "COHORT" $cohort "GENE" $gene;
         bash $SCRIPT_FOLDER/Processing.step09.filterPlink_and_LogisticRegression.sh $BASE_DIR $gene $cohort $dp $cohort_folder;
         echo "STEP 10 START DP" $dp "COHORT" $cohort "GENE" $gene;
-        bash $SCRIPT_FOLDER/Processing.step10.finalSelection.new.sh $BASE_DIR $gene $cohort $dp
+        bash $SCRIPT_FOLDER/Processing.step10.finalSelection.sh $BASE_DIR $gene $cohort $dp
     done
 done
 
 echo "STEP 11 START"
-bash $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.noMultiAllele.sh $BASE_DIR $gene_list $cohort
+bash $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.sh $BASE_DIR $gene_list $cohort
