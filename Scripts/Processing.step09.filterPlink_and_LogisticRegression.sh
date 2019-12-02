@@ -2,7 +2,6 @@
 
 module load intel/2018.3
 module load vcftools
-module load plink/1.9b_5.2-x86_64
 
 read BASE_DIR gene cohort_name DP cohort_folder<<< $@
 if [[ -z $gene ]]; then echo "ERROR: gene (1st arg) not specified"; exit 42; fi

@@ -5,7 +5,7 @@
 #can be ran 3 times one by one OR can be put in a loop: for DP in 15 30 50; do bash script.sh yourfile.vcf $DP; done
 
 # parse variables: read vcf and DPcutoff values from script inputs
-read vcf DPcutoff core<<< $@
+read vcf DPcutoff core <<< $@
 
 # set constants
 g1k_ref=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
@@ -21,7 +21,7 @@ tmp1Vcf=$(basename $vcf|sed "s/.vcf$/_GQ30_DP$DPcutoff.vcf/g")
 tmp2Vcf=$(basename $tmp1Vcf|sed 's/.vcf$/_MISS10.vcf/g')
 outVcf=$(basename $tmp2Vcf|sed 's/.vcf$/_filtered.vcf/g')
 
-java -Xmx10g -jar $GATK37 \
+java -Xmx20g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $vcf \
@@ -33,7 +33,7 @@ java -Xmx10g -jar $GATK37 \
 --setFilteredGtToNocall \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx10g -jar $GATK37 \
+java -Xmx20g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $tmp1Vcf \
@@ -42,10 +42,12 @@ java -Xmx10g -jar $GATK37 \
 --filterName "MISS10" \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx10g -jar $GATK37 \
+java -Xmx20g -jar $GATK37 \
 -T SelectVariants \
 -R $g1k_ref \
 -V $tmp2Vcf \
 -o $outVcf \
+-nt $core \
 --excludeFiltered \
---excludeNonVariants
+--excludeNonVariants \
+-nt 40

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read BASE_DIR gene cohort_name DP <<< $@
+read BASE_DIR gene cohort_name DP core <<< $@
 if [[ -z $gene ]]; then echo "ERROR: gene (1st arg) not specified"; exit 42; fi
 if [[ -z $DP || ! $DP -gt 0 ]]; then echo "ERROR: depth (2nd arg) not specified"; exit 42; fi
 if [[ -z $cohort_name ]]; then echo "ERROR: cohort name (3rd arg) not specified"; exit 42; fi
@@ -19,7 +19,7 @@ if [[ ! -s $vcf ]]; then echo "ERROR: input vcf empty or does not exist; name sh
 temp=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.temp.vcf
 output=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.final.vcf
 
-java -Xmx4g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $temp -L $INTERVALS -env 
+java -Xmx20g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $temp -L $INTERVALS -env -nt $core 
 
 awk -v sample=$(cut -d ' ' -f 1 $SAMPLE_LIST | sed -z 's/\n/,/g') '
     BEGIN{
