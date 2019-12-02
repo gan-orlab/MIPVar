@@ -49,5 +49,5 @@ java -Xmx20g -jar $GATK37 \
 -o $outVcf \
 -nt $core \
 --excludeFiltered \
---excludeNonVariants \
--nt 40
+--excludeNonVariants
+
