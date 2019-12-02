@@ -17,7 +17,7 @@ do
     echo "STEP 4 START DP" $dp;
     bash $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF25_annotated.vcf" $dp $core;
     echo "STEP 5 START DP" $dp;
-    bash $SCRIPT_FOLDER/Processing.step05.flagBadSamplesAndCreateExclusionList.customMISS.sh $output_name"_GF25_annotated_GQ30_DP"$dp"_MISS10_filtered.vcf";
+    bash $SCRIPT_FOLDER/Processing.step05.flagBadSamplesAndCreateExclusionList.customMISS.sh $output_name"_GF25_annotated_GQ30_DP"$dp"_MISS10_filtered.vcf" $miss;
     echo "STEP 6 START DP" $dp;
     bash $SCRIPT_FOLDER/Processing.step06.excludeBadSamples.sh $output_name"_GF25_annotated_GQ30_DP"$dp"_MISS10_filtered.vcf" $output_name"_GF25_annotated_GQ30_DP"$dp"_MISS10_filtered.vcf."$miss"PercentShitSamplesToExclude" $core;
     for cohort in FC NY ISR;
