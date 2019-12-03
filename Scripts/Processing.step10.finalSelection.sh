@@ -1,9 +1,11 @@
 #!/bin/bash
 
 read BASE_DIR gene cohort_name DP core <<< $@
-if [[ -z $gene ]]; then echo "ERROR: gene (1st arg) not specified"; exit 42; fi
-if [[ -z $DP || ! $DP -gt 0 ]]; then echo "ERROR: depth (2nd arg) not specified"; exit 42; fi
+if [[ ! -s $BASE_DIR ]]; then echo "ERROR: input base directory (1st argument) not specified, empty or does not exist"; exit 42; fi
+if [[ -z $gene ]]; then echo "ERROR: gene (2st arg) not specified"; exit 42; fi
+if [[ -z $DP || ! $DP -gt 0 ]]; then echo "ERROR: depth (4nd arg) not specified"; exit 42; fi
 if [[ -z $cohort_name ]]; then echo "ERROR: cohort name (3rd arg) not specified"; exit 42; fi
+if [[ -z $core || ! $core -gt 0 ]]; then echo "ERROR: depth (5nd arg) not specified"; exit 42; fi
 
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
 GATK37=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
