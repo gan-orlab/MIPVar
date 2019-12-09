@@ -9,7 +9,6 @@ echo "STEP 3 START"
 bash $SCRIPT_FOLDER/Processing.step03.annotateVariants.sh $output_name".vcf" $core $BASE_DIR
 
 echo "STEP 11 START"
-module load plink/1.9b_5.2-x86_64;
 
 plink --vcf $output_name"_annotated.vcf" --make-bed --out $output_name ;
 #awk '{print "1 "$2" "$3" "$4" "$5" 2"}' $output_name.fam > $output_name.PED;
