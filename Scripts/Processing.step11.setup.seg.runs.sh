@@ -61,8 +61,7 @@ for cohort in $cohorts; do
     echo ......creating ped
     cat $fams|sort -u|tr ' ' '\t'|awk 'BEGIN{FS=OFS="\t"}{print "PD",$2,$3,$4,$5,$6}' > $ped
     echo ......creating vcf
-    java -Xmx4g -cp $gatk org.broadinstitute.gatk.tools.CatVariants -R $REF $(printf " -V:%s %s " $(for i in $vcfs; do echo -e "$(basename $i|cut -d. -f1)\t$i"; done)) -out $tmp_vcf  --log_to_file $seg_dir/$run_prefix.CombineVariants.log 2>/dev/null
-    java -Xmx4g -jar $gatk -T SelectVariants -R $REF -V $tmp_vcf -o $vcf -env 2>/dev/null
+    java -Xmx4g -cp $gatk org.broadinstitute.gatk.tools.CatVariants -R $REF $(printf " -V:%s %s " $(for i in $vcfs; do echo -e "$(basename $i|cut -d. -f1)\t$i"; done)) -out $vcf  --log_to_file $seg_dir/$run_prefix.CombineVariants.log 2>/dev/null
     echo ......creating seg script
     echo -e "export run=PD.$cohort.$DP\nexport VCF_LIST=\"$vcf\"\ncd $seg_dir\nbash $seg_script" > $local_seg
     echo ......running seg script
