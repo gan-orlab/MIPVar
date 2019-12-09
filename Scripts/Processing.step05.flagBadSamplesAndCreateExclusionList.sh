@@ -9,7 +9,7 @@ out2=$(basename $vcf).50PercentShitSamplesToExclude
 out3=$(basename $vcf).10PercentShitSamplesToExclude
 if [[ ! -s $vcf ]]; then echo "WTF COWBOY YOUR INPUT FILE (NAME=$vcf) IS EMPTY OR DOES NOT EXIST"; exit 42; fi
 
-awk -F"\t" 'BEGIN{FS=OFS="\t"}{if ($0~/#/) {if ($1=="#CHROM") {for (i=10; i<=NF; i++) samples[i]=$i}; next}; total++; for (i=10; i<=NF; i++) if ($i~/^\.\/\./) c[samples[i]]++; }END{for (i in c) print i,c[i]/total}' $vcf |sort -k2n > $out
+awk -F"\t" 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {if ($1=="#CHROM") {for (i=10; i<=NF; i++) samples[i]=$i}; next}; total++; for (i=10; i<=NF; i++) if ($i~/^\.\/\./) c[samples[i]]++; }END{for (i in c) print i,c[i]/total}' $vcf |sort -k2n > $out
 
 
 cat $out | awk '{ if ($2>0.5) {print $1}}'  > $out2

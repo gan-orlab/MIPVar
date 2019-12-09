@@ -28,4 +28,4 @@ java -Xmx64g -jar $GATK37 -T VariantAnnotator -R $REF -V $vcf --dbsnp $DBSNP -o 
 
 $vcf2annovar -i $vcf_dbsnp -b v37 -vc gatk -id $(basename $vcf) --exclude all --include $(printf "%s," $(cat $annotation_list)|sed 's/,$//g') -o $BASE_DIR/$vcf_annovar
 
-awk 'BEGIN{FS=OFS="\t"}{if ($0~/#/) {print; next}; if ($3==".") { if ($5!="*") {$3=$1":"$2":"$4":"$5} else {$3=$1":"$2":"$4":del"} } print $0}' $vcf_annovar > $vcf_final
+awk 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {print; next}; if ($3==".") { if ($5!="*") {$3=$1":"$2":"$4":"$5} else {$3=$1":"$2":"$4":del"} } print $0}' $vcf_annovar > $vcf_final

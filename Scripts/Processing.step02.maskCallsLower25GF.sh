@@ -22,7 +22,7 @@ awk -v cutoff=$cutoff '
   }
   BEGIN{FS=OFS="\t"}
   {
-  if ($0~/#/) {print; next}
+  if ($0~/^#/) {print; next}
   split($9,FORMAT,":")
   for (i in FORMAT) if (FORMAT[i]=="AD") field=i
   for (i=10; i<=NF; i++) {
