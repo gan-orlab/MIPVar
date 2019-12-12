@@ -33,7 +33,7 @@ process_segregation() {
     bash $seg_script
     seg_results=$(ls -1 $RUN_DIR/$output_name.output)
     last_col=$[$(header $seg_results|awk -F"\t" '$2=="Family members"'|cut -f1)-1]
-    paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"}{if (NR==FNR) {key=$1":"$3; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next}; key=$2":"$3; if (key in a) {print a[key]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output
+    paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"} {if (NR==FNR) {key=$1":"$3":"$4":"$5; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next};key=$2":"$3":"$4":"$5; key2=$2":"$3":"$5":"$4; if (key in a) {print a[key]} else if(key2 in a) {print a[key2]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output
 }
 
 # set up lists
@@ -53,7 +53,7 @@ echo creating seg scripts and pedigree files
     echo ......creating ped
     cat $fams|sort -u|tr ' ' '\t'|awk 'BEGIN{FS=OFS="\t"}{print "PD",$2,0,0,0,2}' > $ped
     echo ......creating vcf
-    java -Xmx4g -jar $gatk -T CombineVariants -R $REF $(printf " -V:%s %s " $(for i in $vcfs; do echo -e "$(basename $i|cut -d. -f1)\t$i"; done)) -o $vcf --genotypemergeoption PRIORITIZE --rod_priority_list $(for i in $vcfs; do basename $i|cut -d. -f1; done|tr '\n' ','|sed 's/,$//g') --log_to_file $RUN_DIR/MLPA.CombineVariants.log 2>/dev/null
+    java -Xmx4g -cp $gatk org.broadinstitute.gatk.tools.CatVariants -R $REF $(printf " -V:%s %s " $(for i in $vcfs; do echo -e "$(basename $i|cut -d. -f1)\t$i"; done)) -out $vcf  --log_to_file $RUN_DIR/MLPA.CombineVariants.log 2>/dev/null
     echo ......creating seg script
     echo -e "export run=$output_name\nexport VCF_LIST=\"$vcf\"\nbash $seg_script" > $local_seg
     echo ......running seg script

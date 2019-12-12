@@ -25,10 +25,11 @@ if [[ ! -s $covar ]]; then echo "ERROR: covar file empty or does not exist; name
 name=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP$DP
 
 #vcf>tfile format
-vcftools --vcf $vcf --plink-tped --out $name 
+#vcftools --vcf $vcf --plink-tped --out $name 
 
 #update sex and pheno
-plink --tfile $name --update-sex $sex --make-bed --allow-no-sex --out $name 
+plink --vcf $vcf --keep-allele-order --update-sex $sex --make-bed --allow-no-sex --out $name
+#plink --tfile $name --update-sex $sex --make-bed --allow-no-sex --out $name 
 plink --bfile $name --pheno $pheno --make-bed --allow-no-sex --out $name  
 
 #filtration steps
@@ -65,7 +66,7 @@ cut -d ' ' -f1 ${name}_geno10_ind10_hwe_testmiss.fam > ${name}.final.samples
 #cut -f2 ${name}_geno10_ind10_hwe_testmiss.bim > $gene.$cohort_name.DP$DP.final.intervals
 #cut -f2 ${name}_geno10_ind10_hwe_testmiss.bim > ${name}.final.intervals
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss --recode vcf --keep-allele-order --out ${name}_geno10_ind10_hwe_testmiss
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --recode vcf --out ${name}_geno10_ind10_hwe_testmiss
 
 #paste <(cut -f1-4,6,7,9,10,12 ${name}.assoc.logistic) <(cut -f5-6  ${name}.assoc.fisher) > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
 paste ${name}.assoc.logistic ${name}.assoc.fisher | sed 's/ \+/\t/g' | awk '{print $1,$2,$3,$4,$19,$6,$7,$9,$10,$12,$17,$18}' OFS="\t" > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
