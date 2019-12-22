@@ -26,10 +26,10 @@ name=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP$DP
 
 #make ref txt
 
-awk 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {next;} print $3,$4}' $vcf > REF_ALLELE.txt
+awk 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {next;} print $3,$4}' $vcf > $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt
 
 #update sex and pheno
-plink --vcf $vcf --a2-allele REF_ALLELE.txt --update-sex $sex --make-bed --allow-no-sex --out $name
+plink --vcf $vcf --a1-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --update-sex $sex --make-bed --allow-no-sex --out $name
 #plink --vcf $vcf --keep-allele-order --update-sex $sex --make-bed --allow-no-sex --out $name
 #plink --tfile $name --update-sex $sex --make-bed --allow-no-sex --out $name 
 plink --bfile $name --pheno $pheno --make-bed --allow-no-sex --out $name  

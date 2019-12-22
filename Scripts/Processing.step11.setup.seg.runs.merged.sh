@@ -35,7 +35,8 @@ process_segregation() {
     bash $seg_script
     seg_results=$(ls -1 $seg_dir/$run_prefix.output)
     last_col=$[$(header $seg_results|awk -F"\t" '$2=="Family members"'|cut -f1)-1]
-    paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"} {if (NR==FNR) {key=$1":"$3":"$4":"$5; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next}; key=$2":"$3":"$4":"$5; key2=$2":"$3":"$5":"$4; if (key in a) {print a[key]} else if (key2 in a) {print a[key2]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output
+    #paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"} {if (NR==FNR) {key=$1":"$3":"$4":"$5; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next}; key=$2":"$3":"$4":"$5; key2=$2":"$3":"$5":"$4; if (key in a) {print a[key]} else if (key2 in a) {print a[key2]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output
+    paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"} {if (NR==FNR) {key=$1":"$3":"$4":"$5; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next}; key=$2":"$3":"$4":"$5; if (key in a) {print a[key]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output
 }
 
 # set up lists
