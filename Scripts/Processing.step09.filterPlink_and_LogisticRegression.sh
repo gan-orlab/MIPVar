@@ -24,11 +24,13 @@ if [[ ! -s $covar ]]; then echo "ERROR: covar file empty or does not exist; name
 #name=${gene}_${cohort_name}_DP$DP
 name=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP$DP
 
-#vcf>tfile format
-#vcftools --vcf $vcf --plink-tped --out $name 
+#make ref txt
+
+awk 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {next;} print $3,$4}' $vcf > REF_ALLELE.txt
 
 #update sex and pheno
-plink --vcf $vcf --keep-allele-order --update-sex $sex --make-bed --allow-no-sex --out $name
+plink --vcf $vcf --a2-allele REF_ALLELE.txt --update-sex $sex --make-bed --allow-no-sex --out $name
+#plink --vcf $vcf --keep-allele-order --update-sex $sex --make-bed --allow-no-sex --out $name
 #plink --tfile $name --update-sex $sex --make-bed --allow-no-sex --out $name 
 plink --bfile $name --pheno $pheno --make-bed --allow-no-sex --out $name  
 
