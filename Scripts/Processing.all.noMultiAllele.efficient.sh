@@ -30,14 +30,23 @@ do
             bash $SCRIPT_FOLDER/Processing.step08.selectByGene.sh $BASE_DIR $gene_bed $gene $cohort $dp $core;
             echo "STEP 9 START DP" $dp "COHORT" $cohort "GENE" $gene;
             bash $SCRIPT_FOLDER/Processing.step09.filterPlink_and_LogisticRegression.sh $BASE_DIR $gene $cohort $dp $cohort_folder;
+        done
+    done
+done
+
+parallel 'echo "STEP 9 START DP" {1} "COHORT" {2} "GENE" {3}; \
+    bash {4}/Processing.step09.filterPlink_and_LogisticRegression.sh {5} {3} {2} {1} {6};' ::: 15 30 50 ::: FC NY ISR ::: $(cat $gene_list) ::: $SCRIPT_FOLDER ::: $BASE_DIR ::: $cohort_folder
+
+for dp in 15 30 50;
+do
+    for cohort in FC NY ISR;
+    do
+        for gene in $(cat $gene_list);
+        do
             echo "STEP 10 START DP" $dp "COHORT" $cohort "GENE" $gene;
             bash $SCRIPT_FOLDER/Processing.step10.finalSelection.sh $BASE_DIR $gene $cohort $dp $core;
         done
     done
 done
-
-
-
-
 echo "STEP 11 START"
 bash $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.sh $BASE_DIR $gene_list
