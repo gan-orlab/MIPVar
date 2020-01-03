@@ -56,8 +56,8 @@ cat ${name}_geno10_ind10_hwe_testmissing.missing | tail -n +2 | awk -v x="$(wc -
 
 plink --bfile ${name}_geno10_ind10_hwe --keep-allele-order --exclude ${name}_geno10_ind10_hwe_testmissing.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe_testmiss 
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss --keep-allele-order  --logistic hide-covar --covar $covar --covar-name Sex,Age --ci 0.95 --out $name 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss --keep-allele-order --assoc fisher --out $name
+plink --bfile ${name}_geno10_ind10_hwe_testmiss  --logistic hide-covar --covar $covar --covar-name Sex,Age --ci 0.95 --out $name 
+plink --bfile ${name}_geno10_ind10_hwe_testmiss  --assoc fisher --out $name
 
 cp ${name}_geno10_ind10_hwe_testmiss* $ANALYSIS_DIR/
 
@@ -71,7 +71,7 @@ cut -d ' ' -f1 ${name}_geno10_ind10_hwe_testmiss.fam > ${name}.final.samples
 plink --bfile ${name}_geno10_ind10_hwe_testmiss  --recode vcf --out ${name}_geno10_ind10_hwe_testmiss
 
 #paste <(cut -f1-4,6,7,9,10,12 ${name}.assoc.logistic) <(cut -f5-6  ${name}.assoc.fisher) > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
-paste ${name}.assoc.logistic ${name}.assoc.fisher | sed 's/ \+/\t/g' | awk '{print $1,$2,$3,$4,$19,$6,$7,$9,$10,$12,$17,$18}' OFS="\t" > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
+paste ${name}.assoc.logistic ${name}.assoc.fisher | sed 's/ \+/\t/g' | awk '{if (NR==1){tmp=$4;$4=$19;$19=tmp} print $1,$2,$3,$4,$19,$6,$7,$9,$10,$12,$17,$18}' OFS="\t" > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
 
 
 #sed 's/ \+/\t/g' ${name}.assoc.logistic
