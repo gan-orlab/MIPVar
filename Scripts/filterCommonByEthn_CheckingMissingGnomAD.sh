@@ -15,6 +15,8 @@ awk -v cutoff=$cutoff 'BEGIN{FS=OFS="\t"}{
         if ($i ~ /NFE genome/) cEG = i;
         if ($i ~ /Probands w. variant individual names/)          cNamesPro  = i;
         if ($i ~ /Familial controls w. variant individual names/) cNamesCtrl = i;
+        if ($i ~ /F_A/) cFA = i;
+        if ($i ~ /F_U/) cFU = i;
         }
         next;
     };
