@@ -56,7 +56,14 @@ cat ${name}_geno10_ind10_hwe_testmissing.missing | tail -n +2 | awk -v x="$(wc -
 
 plink --bfile ${name}_geno10_ind10_hwe --keep-allele-order --exclude ${name}_geno10_ind10_hwe_testmissing.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe_testmiss 
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss  --logistic hide-covar --covar $covar --covar-name Sex,Age --ci 0.95 --out $name 
+covar_name="Sex,Age"
+
+if [ $cohort_name == NY ]
+then
+    covar_name="Sex,Age,Ethn"
+fi
+
+plink --bfile ${name}_geno10_ind10_hwe_testmiss  --logistic hide-covar --covar $covar --covar-name $covar_name --ci 0.95 --out $name 
 plink --bfile ${name}_geno10_ind10_hwe_testmiss  --assoc fisher --out $name
 
 cp ${name}_geno10_ind10_hwe_testmiss* $ANALYSIS_DIR/
