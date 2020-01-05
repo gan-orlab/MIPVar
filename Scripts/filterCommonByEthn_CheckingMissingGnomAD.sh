@@ -43,5 +43,5 @@ awk -v cutoff=$cutoff 'BEGIN{FS=OFS="\t"}{
         sample=controls[i];
         if (sample2cohort[sample]==1) {ES=1} else {AS=1};
     }
-    if((AF==1&&EF==1)||(AS==0&&EF==1&&ES==1)||(AF==1&&AS==1&&ES==0)) print
+    if((AF==1&&EF==1)||(EF==1&&ES==1)||(AF==1&&AS==1)) print
 }' $cohort $output
