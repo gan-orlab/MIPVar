@@ -5,7 +5,7 @@
 #can be ran 3 times one by one OR can be put in a loop: for DP in 15 30 50; do bash script.sh yourfile.vcf $DP; done
 
 # parse variables: read vcf and DPcutoff values from script inputs
-read vcf DPcutoff core <<< $@
+read vcf DPcutoff <<< $@
 
 # set constants
 g1k_ref=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
@@ -47,7 +47,6 @@ java -Xmx20g -jar $GATK37 \
 -R $g1k_ref \
 -V $tmp2Vcf \
 -o $outVcf \
--nt $core \
 --excludeFiltered \
 --excludeNonVariants
 

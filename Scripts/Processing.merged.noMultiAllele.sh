@@ -1,6 +1,22 @@
 #!/bin/bash
 
-read BASE_DIR gene_list gene_bed output_name sample_list geno cohort cohort_folder core<<< $@
+read BASE_DIR gene_list gene_bed output_name sample_list geno cohort cohort_folder core <<< $@
+
+if [[ -z $BASE_DIR ]]; then echo "ERROR: BASE_DIR (1st arg) not specified"; exit 42; fi
+if [[ -z $gene_list ]]; then echo "ERROR: gene_list (2nd arg) not specified"; exit 42; fi
+if [[ $(awk -F "\t" 'NF != 1' $gene_list) ]]; then echo "ERROR: Unexpected format for gene_list (2nd arg)"; exit 42; fi
+if [[ -z $gene_bed ]]; then echo "ERROR: gene_bed (3rd arg) not specified"; exit 42; fi
+if [[ $(awk -F "\t" 'NF != 4' $gene_bed) ]]; then echo "ERROR: Unexpected format for gene_bed (3rd arg)"; exit 42; fi
+if [[ -z $output_name ]]; then echo "ERROR: output_name (4th arg) not specified"; exit 42; fi
+if [[ -z $sample_list ]]; then echo "ERROR: sample_list (5th arg) not specified"; exit 42; fi
+if [[ -z $geno ]]; then echo "ERROR: geno (6th arg) not specified"; exit 42; fi
+if [[ $(awk -F "\t" 'NF != 1' $sample_list) ]]; then echo "ERROR: Unexpected format for sample_list (5th arg)"; exit 42; fi
+if [[ -z $cohort ]]; then echo "ERROR: cohort (7th arg) not specified"; exit 42; fi
+if [[ -z $cohort_folder ]]; then echo "ERROR: cohort_folder (8th arg) not specified"; exit 42; fi
+if [[ ! -f $cohort_folder/covar_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain covar_$cohort.txt"; exit 42; fi
+if [[ ! -f $cohort_folder/sex_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain sex_$cohort.txt"; exit 42; fi
+if [[ ! -f $cohort_folder/pheno_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain pheno_$cohort.txt"; exit 42; fi
+if [[ ! -f $cohort_folder/$cohort.samples.list ]]; then echo "ERROR: cohort_folder does not $cohort.samples.list"; exit 42; fi
 
 SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 0 START"

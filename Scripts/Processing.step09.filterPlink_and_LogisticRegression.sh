@@ -29,32 +29,33 @@ name=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP$DP
 awk 'BEGIN{FS=OFS="\t"}{if ($0~/^#/) {next;} print $3,$4}' $vcf > $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt
 
 #update sex and pheno
-plink --vcf $vcf --a1-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --update-sex $sex --make-bed --allow-no-sex --out $name
+plink --vcf $vcf --update-sex $sex --make-bed --allow-no-sex --out $name
+#plink --vcf $vcf --a1-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --update-sex $sex --make-bed --allow-no-sex --out $name
 #plink --vcf $vcf --keep-allele-order --update-sex $sex --make-bed --allow-no-sex --out $name
 #plink --tfile $name --update-sex $sex --make-bed --allow-no-sex --out $name 
-plink --bfile $name --keep-allele-order --pheno $pheno --make-bed --allow-no-sex --out $name  
+plink --bfile $name  --pheno $pheno --make-bed --allow-no-sex --out $name  
 
 #filtration steps
 
-plink --bfile $name --keep-allele-order --missing --allow-no-sex --out ${name}.missingindv 
+plink --bfile $name --missing --allow-no-sex --out ${name}.missingindv 
 awk 'NR>1 && $5>0.1 {print $2}' ${name}.missingindv.lmiss > ${name}.geno10.snpstoremove
-plink --bfile $name --keep-allele-order --exclude ${name}.geno10.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10 
+plink --bfile $name --exclude ${name}.geno10.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10 
 
 awk 'NR>1 && $6 >0.1{print $1,$2}' ${name}.missingindv.imiss > ${name}.geno10.indvtoremove
-plink --bfile ${name}_geno10 --keep-allele-order --remove ${name}.geno10.indvtoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10 
+plink --bfile ${name}_geno10 --remove ${name}.geno10.indvtoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10 
 
-plink --bfile ${name}_geno10_ind10 --hardy --keep-allele-order --allow-no-sex --out ${name}_geno10_ind10_hwe 
+plink --bfile ${name}_geno10_ind10 --hardy  --allow-no-sex --out ${name}_geno10_ind10_hwe 
 awk 'NR>1 && $9<0.001 {print $2}' ${name}_geno10_ind10_hwe.hwe > ${name}_geno10_ind10_hwe.snpstoremove
-plink --bfile ${name}_geno10_ind10 --keep-allele-order --exclude ${name}_geno10_ind10_hwe.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe 
+plink --bfile ${name}_geno10_ind10 --exclude ${name}_geno10_ind10_hwe.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe 
 
 
-plink --bfile ${name}_geno10_ind10_hwe --test-missing --keep-allele-order --allow-no-sex --out ${name}_geno10_ind10_hwe_testmissing 
+plink --bfile ${name}_geno10_ind10_hwe --test-missing --allow-no-sex --out ${name}_geno10_ind10_hwe_testmissing 
 
 #Bonferonni cut off 0.05/#of SNPs, see how many get removed
 cat ${name}_geno10_ind10_hwe_testmissing.missing | tail -n +2 | awk -v x="$(wc -l ${name}_geno10_ind10_hwe.bim)" '{ if ($5<0.05/x) {print $2}}'  > ${name}_geno10_ind10_hwe_testmissing.snpstoremove
 #awk 'NR>1 && $5<0.0125 {print $2}' ${name}_geno10_ind10_hwe_testmissing.missing > ${name}_geno10_ind10_hwe_testmissing.snpstoremove
 
-plink --bfile ${name}_geno10_ind10_hwe --keep-allele-order --exclude ${name}_geno10_ind10_hwe_testmissing.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe_testmiss 
+plink --bfile ${name}_geno10_ind10_hwe  --exclude ${name}_geno10_ind10_hwe_testmissing.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe_testmiss 
 
 covar_name="Sex,Age"
 
@@ -63,8 +64,8 @@ then
     covar_name="Sex,Age,Ethn"
 fi
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss  --logistic hide-covar --covar $covar --covar-name $covar_name --ci 0.95 --out $name 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss  --assoc fisher --out $name
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --logistic hide-covar --covar $covar --covar-name $covar_name --ci 0.95 --out $name 
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --assoc fisher --out $name
 
 cp ${name}_geno10_ind10_hwe_testmiss* $ANALYSIS_DIR/
 

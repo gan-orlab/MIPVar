@@ -16,10 +16,8 @@ output=$BASE_DIR/$2.vcf
 bed=$3
 sample_list=$4
 core=$5
-java -Xmx20g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output_old -L $bed -sf $sample_list -env -nt $core
-java -Xmx8g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T LeftAlignAndTrimVariants -R $REF -V $output_old -o split.vcf --splitMultiallelics --dontTrimAlleles
-java -Xmx20g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V split.vcf -o $output -sf $sample_list -env -nt $core
 
+java -Xmx20g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V split.vcf -o $output -sf $sample_list -env -nt $core
 
 #gatk command switches, explained:
 # -T = which gatk algorithm to use
