@@ -76,7 +76,7 @@ cut -d ' ' -f1 ${name}_geno10_ind10_hwe_testmiss.fam > ${name}.final.samples
 #cut -f2 ${name}_geno10_ind10_hwe_testmiss.bim > $gene.$cohort_name.DP$DP.final.intervals
 #cut -f2 ${name}_geno10_ind10_hwe_testmiss.bim > ${name}.final.intervals
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss  --recode vcf --out ${name}_geno10_ind10_hwe_testmiss
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --recode vcf --out ${name}_geno10_ind10_hwe_testmiss
 
 #paste <(cut -f1-4,6,7,9,10,12 ${name}.assoc.logistic) <(cut -f5-6  ${name}.assoc.fisher) > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
 paste ${name}.assoc.logistic ${name}.assoc.fisher | sed 's/ \+/\t/g' | awk '{if (NR>1){tmp=$4;$4=$19;$19=tmp} print $1,$2,$3,$4,$19,$6,$7,$9,$10,$12,$17,$18}' OFS="\t" > $ANALYSIS_DIR/$gene.$cohort_name.DP$DP.stats
