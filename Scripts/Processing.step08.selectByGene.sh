@@ -20,7 +20,7 @@ if [[ ! -s $vcf ]]; then echo "ERROR: input vcf empty or does not exist; name sh
 output=$BASE_DIR/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 #output=$BASE_DIR/script.testing/genes/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 
-sed '/AC=0/d' -i $vcf
+#sed '/AC=0/d' -i $vcf
 java -Xmx32g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -L $GENE_BED -nt $core
 
 

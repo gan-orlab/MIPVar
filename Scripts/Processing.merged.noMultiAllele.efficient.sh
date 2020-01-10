@@ -1,8 +1,8 @@
 #!/bin/bash
 
-read BASE_DIR gene_list gene_bed output_name sample_list geno cohort cohort_folder core<<< $@
+read BASE_DIR gene_list gene_bed output_name sample_list geno cohort cohort_folder core <<< $@
 
-PARAM="--mem=40G --time=1:0:0 --account=rrg-grouleau-ac"
+PARAM="--mem=40G --time=2:0:0 --account=rrg-grouleau-ac"
 
 if [[ -z $BASE_DIR ]]; then echo "ERROR: BASE_DIR (1st arg) not specified"; exit 42; fi
 if [[ -z $gene_list ]]; then echo "ERROR: gene_list (2nd arg) not specified"; exit 42; fi
@@ -27,7 +27,7 @@ bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list
 
 echo "STEP 1 START"
 srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-srun $PARAM --cpus-per-task=1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 
 echo "STEP 2 START"
@@ -35,11 +35,13 @@ bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$
 
 echo "STEP 3 START"
 srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
-srun --mem=40G --time=2:0:0 --account=rrg-grouleau-ac --cpus-per-task=1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
+srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
 
 echo "STEP 4 START"
-srun --mem=40G --time=2:0:0 --account=rrg-grouleau-ac --cpus-per-task=3 parallel 'echo "STEP 4 START DP" {1}; \
-            bash {3}/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh {2}_GF{4}_annotated.vcf {1} ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
+for dp in 15 30 50;
+do  echo "STEP 4 START DP $dp";
+    srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
+done
 
 echo "STEP 5 START"
 srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {1}; \
