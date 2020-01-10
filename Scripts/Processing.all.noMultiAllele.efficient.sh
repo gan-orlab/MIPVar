@@ -46,7 +46,7 @@ echo "STEP 4 START"
 
 for dp in 15 30 50;
     do  echo "STEP 4 START DP $dp";
-    bash $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF25_annotated.vcf" $dp ;
+    srun $PARAM $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF25_annotated.vcf" $dp ;
 done
 
 echo "STEP 5 START"
