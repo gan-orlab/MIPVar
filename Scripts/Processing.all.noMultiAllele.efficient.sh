@@ -35,7 +35,7 @@ echo "STEP 1 START"
 srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-if [[ ! -f $BASE_DIR/$output_name"_GF25.vcf"  ]]; then echo "ERROR: STEP 1 failed"; exit 42; fi
+if [[ ! -f $BASE_DIR/$output_name".vcf"  ]]; then echo "ERROR: STEP 1 failed"; exit 42; fi
 echo "STEP 2 START"
 bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 
 echo "STEP 3 START"

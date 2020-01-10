@@ -23,18 +23,18 @@ if [[ -z $core ]]; then echo "ERROR: core (9th arg) not specified"; exit 42; fi
 
 SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 0 START"
-bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
+#bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
 
 echo "STEP 1 START"
-srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+#srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 
 echo "STEP 2 START"
-bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
+#bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
 
 echo "STEP 3 START"
-srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
+#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
 srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
 
 echo "STEP 4 START"
