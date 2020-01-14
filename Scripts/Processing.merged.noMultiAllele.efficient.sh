@@ -25,33 +25,33 @@ if [[ -z $core ]]; then echo "ERROR: core (9th arg) not specified"; exit 42; fi
 
 SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
 echo "STEP 0 START"
-#bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
+bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
 
 echo "STEP 1 START"
-#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-#srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 
 echo "STEP 2 START"
-#bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
+bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
 
 echo "STEP 3 START"
-#srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
-#srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
+srun $PARAM --cpus-per-task=$core $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
+srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
 
 echo "STEP 4 START"
-#for dp in 15 30 50;
-#do  echo "STEP 4 START DP $dp";
-#    srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
-#done
+for dp in 15 30 50;
+do  echo "STEP 4 START DP $dp";
+    srun $PARAM -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
+done
 
 echo "STEP 5 START"
-#srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {1}; \
-#            bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
+srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {1}; \
+            bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 6 START"
-#srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
-#        bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
+srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
+        bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 7 START"
 srun --mem=80G --time=0:10:0 --account=rrg-grouleau-ac --cpus-per-task=3 parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
