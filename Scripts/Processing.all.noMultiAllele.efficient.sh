@@ -57,9 +57,12 @@ srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
     bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER
 echo "STEP 7 START"
 for cohort in FC NY ISR;
-    do srun --mem=80G --time=0:10:0 --account=rrg-grouleau-ac --cpus-per-task=3 parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
-    bash {4}/Processing.step07.selectByCohorts.sh {3}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered_cleaned.vcf" {2} {1} {5} 1;' ::: 15 30 50 ::: $cohort ::: $output_name ::: $SCRIPT_FOLDER ::: $cohort_folder;
+    do for dp in 15 30 50;
+        do echo "STEP 7 START DP" $dp "COHORT" $cohort;
+        srun $PARAM -c 1 bash $SCRIPT_FOLDER/Processing.step07.selectByCohorts.sh $output_name"_GF25_annotated_GQ30_DP"$dp"_MISS10_filtered_cleaned.vcf" $cohort $dp $cohort_folder $core;
+    done
 done
+
 echo "STEP 8 START"
 srun $PARAM --cpus-per-task=9 $SCRIPT_FOLDER/Processing.step08.selectByGene.parallel.sh $BASE_DIR $gene_list $SCRIPT_FOLDER $gene_bed
 echo "STEP 9 START"
