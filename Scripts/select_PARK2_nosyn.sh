@@ -2,7 +2,7 @@
 
 output=$1
 
-awk -v gene_name=$2 'BEGIN{FS=OFS="\t"}{
+awk 'BEGIN{FS=OFS="\t"}{
   if (FNR==1) {
     print
     for (i=1; i<=NF; i++) {
@@ -11,7 +11,7 @@ awk -v gene_name=$2 'BEGIN{FS=OFS="\t"}{
     }
     next;
   };
-  if ($gene ~ gene_name){
+  if ($gene ~ /PARK2/){
     if($var ~ /stop/ || $var ~ /nonsyn/ || $var ~ /frame/ || $var ~ /intronic_splicing/){
         print
     }

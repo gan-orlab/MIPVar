@@ -47,7 +47,7 @@ done
 
 echo "STEP 5 START"
 srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {1}; \
-            bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
+#            bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 6 START"
 srun $PARAM --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \

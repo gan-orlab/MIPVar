@@ -12,22 +12,16 @@ awk 'BEGIN{FS=OFS="\t"}{
       if ($i ~ /Reference Allele/) ref = i;
       if ($i ~ /Mutant Allele/) alt = i;
       if ($i ~ /Detailed annotation of the variant/) anno = i;
-      if ($i ~ /Probands w. variant individual names/) case_name = i;
-      if ($i ~ /Familial controls w. variant individual names/) control_name = i;
+      if ($i ~ /Probands w. variant individual names/) name = i;
     }
     next;
   };
   if($name > 0 ){
-    split($case_name,probands,",");
-    split($control_name,family,",");
+    split($name,probands,",");
     split($anno,transcript,"|");
-    for (i in transcript){ if (transcript[i] ~ /NM_004562/) PARK2 = transcript[i]};
     chr_pos = $chr":"$pos;
     for (i in probands){
-        print probands[i],chr_pos,$rsid,$ref,$alt,PARK2;
-    }
-    for (i in family){
-        print family[i],chr_pos,$rsid,$ref,$alt,PARK2;
+        print probands[i],chr_pos,$rsid,$ref,$alt,$anno;
     }
   }
 }' $output
