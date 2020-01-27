@@ -23,7 +23,7 @@ tmp3Vcf=$(basename $tmp2Vcf|sed 's/.vcf$/_preCombine.vcf/g')
 tmp4Vcf=$(basename $tmp3Vcf|sed 's/.vcf$/_preBiallelic.vcf/g')
 outVcf=$(basename $tmp2Vcf|sed 's/.vcf$/_filtered.vcf/g')
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $vcf \
@@ -35,7 +35,7 @@ java -Xmx20g -jar $GATK37 \
 --setFilteredGtToNocall \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $tmp1Vcf \
@@ -44,28 +44,28 @@ java -Xmx20g -jar $GATK37 \
 --filterName "MISS10" \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T SelectVariants \
 -R $g1k_ref \
 -V $tmp2Vcf \
 -o $tmp3Vcf \
 --excludeFiltered \
---excludeNonVariants
+--excludeNonVariants;
 
 
-java -Xmx20g -jar $GATK37 \
--T CombineVariants \ 
+java -Xmx4g -jar $GATK37 \
+-T CombineVariants \
 -R $g1k_ref \
--V $input_vcf \ 
--o $tmp4Vcf
+-V $tmp3Vcf \
+-o $tmp4Vcf;
 
-java -Xmx20g -jar $GATK37 \
--T SelectVariants \ 
+java -Xmx4g -jar $GATK37 \
+-T SelectVariants \
 -R $g1k_ref \
 -V $tmp4Vcf \
--o $outVcf \ 
+-o $outVcf \
 -env \
---restrictAllelesTo BIALLELIC
+--restrictAllelesTo BIALLELIC;
 
 
 

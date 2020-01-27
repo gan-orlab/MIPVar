@@ -3,6 +3,8 @@
 #this is the step to filter all variants with genotype frequency of below 25% 
 #it takes takes vcf as input (cutoff is precoded, but can be modified to be a variable if needed)
 
+module load gatk/4.1.2.0
+
 vcf=$1
 
 cutoff=${2:-0.25}
@@ -34,5 +36,7 @@ awk -v cutoff=$cutoff '
     if (DENOM == 0) {freq = 0} else {freq = NUM / DENOM}
     if (freq < cutoff) $i = "./."
   }
-  print $0
+  print $0;
+  if(NR % 1000 == 0){print "Printing line ",NR > "/dev/stderr";}
 }' $vcf > $out
+

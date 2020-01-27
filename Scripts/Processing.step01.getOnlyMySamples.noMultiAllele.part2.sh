@@ -17,7 +17,7 @@ bed=$3
 sample_list=$4
 core=$5
 
-java -Xmx8g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T LeftAlignAndTrimVariants -R $REF -V $output_old -o split.vcf --splitMultiallelics --dontTrimAlleles
+java -Xmx4g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T LeftAlignAndTrimVariants -R $REF -V $output_old -o split.vcf --splitMultiallelics --dontTrimAlleles
 
 
 #gatk command switches, explained:

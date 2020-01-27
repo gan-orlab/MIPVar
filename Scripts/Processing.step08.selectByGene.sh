@@ -21,7 +21,7 @@ output=$BASE_DIR/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 #output=$BASE_DIR/script.testing/genes/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 
 #sed '/AC=0/d' -i $vcf
-java -Xmx32g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -L $GENE_BED -nt $core
+java -Xmx4g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -L $GENE_BED -nt $core
 
 
 #for gene in $(cat familial_pd_genes_except_GBA); do for cohort in FC NY ISR; do bash ../Scripts/Processing.step08.selectByGene.sh $gene $cohort 30; done; done

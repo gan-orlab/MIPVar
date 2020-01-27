@@ -9,6 +9,6 @@ BED=$2
 RUN=$3
 DIR=$4
 
-OUT=$DIR/$RUN.vcf.gz
+OUT=$DIR/$RUN.vcf
 
-java -Xmx30g -jar $EBROOTGATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -nt 10 --disable_auto_index_creation_and_locking_when_reading_rods -R $REF --intervals $BED $(printf " --variant %s " $(cat $GVCF_LIST)) --out $OUT
+java -Xmx40g -jar $EBROOTGATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -nt 10 --disable_auto_index_creation_and_locking_when_reading_rods -R $REF --intervals $BED $(printf " --variant %s " $(cat $GVCF_LIST)) --out $OUT 
