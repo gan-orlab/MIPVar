@@ -31,7 +31,7 @@ echo "STEP 1 START"
 srun -t 0:30:0 --mem=40G -c $core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.preAnnotated.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 
 echo "STEP 2 START"
-bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
+srun -t 2:0:0 --mem=4G -c 1 $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
 
 echo "STEP 3 START (renaming file)"
 cp $BASE_DIR/$output_name"_GF"$geno".vcf" $BASE_DIR/$output_name"_GF"$geno"_annotated.vcf"

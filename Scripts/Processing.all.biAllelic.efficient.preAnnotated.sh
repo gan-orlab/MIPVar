@@ -37,7 +37,7 @@ srun -t 0:30:0 --mem=40G -c $core $SCRIPT_FOLDER/Processing.step01.getOnlyMySamp
 if [[ ! -f $BASE_DIR/$output_name".vcf"  ]]; then echo "ERROR: STEP 1 failed"; exit 42; fi
 
 echo "STEP 2 START"
-bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 
+srun -t 2:0:0 --mem=4G -c 1  $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 
 echo "STEP 3 START (renaming file)"
 cp $BASE_DIR/$output_name"_GF25.vcf" $BASE_DIR/$output_name"_GF25_annotated.vcf"
 gatk IndexFeatureFile -F $BASE_DIR/$output_name"_GF25_annotated.vcf"
