@@ -11,6 +11,7 @@
 
 vcf=$1
 core=$2
+mem=`echo "-Xmx"$((4*core))g`
 if [[ ! -s $vcf ]]; then echo "ERROR: vcf (1st arg) not specified, empty or does not exist"; exit 42; fi
 
 BASE_DIR=$3
@@ -24,5 +25,5 @@ vcf_dbsnp=$(echo $vcf|sed 's/.vcf$/_dbSNP.vcf/g')
 vcf_annovar=$(echo $vcf_dbsnp|sed 's/.vcf$/_annovar.vcf/g')
 vcf_final=$(echo $vcf|sed 's/.vcf/_annotated.vcf/g')
 
-java -Xmx40g -jar $GATK37 -T VariantAnnotator -R $REF -V $vcf --dbsnp $DBSNP -o $vcf_dbsnp -nt $core
+java $mem -jar $GATK37 -T VariantAnnotator -R $REF -V $vcf --dbsnp $DBSNP -o $vcf_dbsnp -nt $core
 

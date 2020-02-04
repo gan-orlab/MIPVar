@@ -15,7 +15,8 @@ output=$BASE_DIR/$2.vcf
 bed=$3
 sample_list=$4
 core=$5
-java -Xmx20g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -L $bed -sf $sample_list -env -nt $core  --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES --restrictAllelesTo BIALLELIC 
+mem=`echo "-Xmx"$((4*core))g`
+java $mem -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -L $bed -sf $sample_list -env -nt $core  --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES --restrictAllelesTo BIALLELIC 
 
 
 #gatk command switches, explained:

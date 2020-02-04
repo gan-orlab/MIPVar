@@ -6,8 +6,6 @@ PARAM_BIG=`echo "--mem="$((core*4))"g -c $core -t 2:0:0"`
 PARAM_SMALL="--mem=4g -c 1 -t 2:0:0"
 PARAM_MID="--mem=12g -c 3 -t 2:0:0"
 
-module load gatk/4.1.2.0
-
 if [[ -z $BASE_DIR ]]; then echo "ERROR: BASE_DIR (1st arg) not specified"; exit 42; fi
 if [[ -z $gene_list ]]; then echo "ERROR: gene_list (2nd arg) not specified"; exit 42; fi
 if [[ ! -f $BASE_DIR/$gene_list ]]; then echo "ERROR: gene_list (2nd arg) does not exist"; exit 42; fi
@@ -32,41 +30,43 @@ echo "STEP 0 START"
 bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
 
 echo "STEP 1 START"
-srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.preAnnotated.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun --mem=4G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
 
 echo "STEP 2 START"
-srun -t 2:0:0 --mem=4G -c 1 $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
+bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$geno
 
-echo "STEP 3 START (renaming file)"
-cp $BASE_DIR/$output_name"_GF"$geno".vcf" $BASE_DIR/$output_name"_GF"$geno"_annotated.vcf"
-gatk IndexFeatureFile -F $BASE_DIR/$output_name"_GF"$geno"_annotated.vcf"
+echo "STEP 3 START"
+srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
+srun --mem=4G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $BASE_DIR
 
 echo "STEP 4 START"
-srun -t 2:0:0 --mem=12G -c 3 parallel 'echo "STEP 4 START DP" {1}; \
-    bash {3}/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh {2}"_"GF"{4}"_annotated.vcf {1} 2>&1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
+for dp in 15 30 50;
+do  echo "STEP 4 START DP $dp";
+    srun --mem=4G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
+done
 
 echo "STEP 5 START"
-srun -t 0:30:0 --mem=12G -c 3 parallel 'echo "STEP 5 START DP" {1}; \
+srun --mem=12G --time=2:0:0 --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {1}; \
     bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 6 START"
-srun -t 0:30:0 --mem=12G -c 3 parallel 'echo "STEP 6 START DP" {1}; \
+srun --mem=4G --time=1:0:0 --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
         bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 7 START"
-srun $PARAM_BIG parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
+srun --mem=12G --time=1:0:0 --account=rrg-grouleau-ac --cpus-per-task=3 parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
         bash {4}/Processing.step07.selectByCohorts.sh {3}"_GF{6}_annotated_GQ30_DP"{1}"_MISS10_filtered_cleaned.vcf" {2} {1} {5} 1;' ::: 15 30 50 ::: $cohort ::: $output_name ::: $SCRIPT_FOLDER ::: $cohort_folder ::: $geno
 
 echo "STEP 8 START"
-srun -t 0:30:0 --mem=12G -c 3 $SCRIPT_FOLDER/Processing.step08.selectByGene.parallel.1cohort.sh $BASE_DIR $gene_list $SCRIPT_FOLDER $gene_bed $cohort
-
+srun --mem=12G --time=2:0:0 --cpus-per-task=3 $SCRIPT_FOLDER/Processing.step08.selectByGene.parallel.1cohort.sh $BASE_DIR $gene_list $SCRIPT_FOLDER $gene_bed $cohort
 echo "STEP 9 START"
 srun $PARAM_BIG parallel 'echo "STEP 9 START DP" {1} "COHORT" {2} "GENE" {3}; \
         bash {4}/Processing.step09.filterPlink_and_LogisticRegression.sh {5} {3} {2} {1} {6};' ::: 15 30 50 ::: $cohort ::: $(cat $gene_list) ::: $SCRIPT_FOLDER ::: $BASE_DIR ::: $cohort_folder
-
 echo "STEP 10 START"
 srun $PARAM_BIG parallel 'echo "STEP 10 START DP" {1} "COHORT" {2} "GENE" {3}; \
         bash {4}/Processing.step10.finalSelection.sh {5} {3} {2} {1} 1;' ::: 15 30 50 ::: $cohort ::: $(cat $gene_list) ::: $SCRIPT_FOLDER ::: $BASE_DIR
 
 echo "STEP 11 START"
-srun -t 2:0:0 --mem=12G -c 3 $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.sh $BASE_DIR $gene_list $cohort
+srun --mem=12G --time=1:0:0 --cpus-per-task=3 $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.sh $BASE_DIR $gene_list $cohort

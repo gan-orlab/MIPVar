@@ -11,5 +11,5 @@ if [[ ! -s $excludeSampleList ]]; then echo "ERROR: exclude_sample_list (2nd arg
 
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
 output=$(basename $vcf|sed 's/.vcf$/_cleaned.vcf/g')
-
-java -Xmx4g -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output --exclude_sample_file $excludeSampleList -env -nt $core
+mem=`echo "-Xmx"$((core*4))g`
+java $mem -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output --exclude_sample_file $excludeSampleList -env -nt $core

@@ -1,0 +1,52 @@
+#!/usr/bin/env Rscript
+#packrat::init("/home/vrudakov/soft/lib/R-packrat/SKAT")
+packrat::init("~/soft/lib/R-packrat/SKAT")
+library(SKAT)
+### Parse input variables
+require(methods)
+require(Xmisc)
+parser <- ArgumentParser$new()
+parser$add_argument('--dir', type='character', help='working directory aka your SKAT_Analysis folder')
+parser$add_argument('--gene', type='character', help='gene name. DUH')
+parser$add_argument('--cohort', type='character', help='cohort name (e.g. NY ISR FC)')
+parser$add_argument('--depth',  type='character', help='filtered read depth (e.g. 10x, 50x etc.)')
+#### Setup script doc and help messages
+parser$add_usage('R.SKAT [options]')
+parser$add_description('setup and run R SKAT for one gene one cohort one depth')
+parser$add_argument('--h',type='logical', action='store_true', help='Print the help page')
+parser$add_argument('--help',type='logical', action='store_true', help='Print the help page')
+parser$helpme()
+
+# parse inputs into local variables
+#wd=paste('/home/vrudakov/projects/def-grouleau/COMMON/runs/vrudakov/Thesis/CLEAN/MERGED/SKAT_Analysis',gene,cohort,depth, sep="/")
+wd=paste(dir,gene,cohort,depth, sep="/")
+#####FOR KOSTYA
+#wd=paste('~/projects/def-grouleau/COMMON/runs/senkkon/2020/AD_DLB3/DLB_versus_AD/SKAT_analysis',gene,cohort,depth, sep="/")
+
+
+setwd(wd)
+File.Bed   = paste0(paste(gene,cohort,depth,sep="_"),".bed")
+File.Bim   = paste0(paste(gene,cohort,depth,sep="_"),".bim")
+File.Fam   = paste0(paste(gene,cohort,depth,sep="_"),".fam")
+File.SetID = paste0(paste(gene,cohort,depth,sep="_"),".SETID")
+File.SSD   = paste0(paste(gene,cohort,depth,sep="_"),".SSD")
+File.Info  = paste0(paste(gene,cohort,depth,sep="_"),".info")
+File.Results.SKATO  = paste0(paste(gene,cohort,depth, sep="_"), ".results.skato")
+File.Results.BURDEN = paste0(paste(gene,cohort,depth, sep="_"), ".results.burden")
+
+Generate_SSD_SetID(File.Bed, File.Bim, File.Fam, File.SetID, File.SSD, File.Info)
+
+SSD.INFO<-Open_SSD(File.SSD, File.Info)
+SSD.INFO$nSample
+SSD.INFO$nSets
+
+FAM<-Read_Plink_FAM(File.Fam, Is.binary = TRUE)
+y<-FAM$Phenotype
+
+obj<-SKAT_Null_Model(y ~ 1, out_type="D")
+
+out.skato<-SKATBinary.SSD.All(SSD.INFO, obj, method="optimal.adj")
+out.skato.burden<-SKAT.SSD.All(SSD.INFO, obj, method="Burden")
+
+write.table(out.skato$results, file=File.Results.SKATO, col.names = TRUE, row.names = FALSE)
+write.table(out.skato.burden$results, file=File.Results.BURDEN, col.names = TRUE, row.names = FALSE)

@@ -21,7 +21,7 @@ tmp1Vcf=$(basename $vcf|sed "s/.vcf$/_GQ30_DP$DPcutoff.vcf/g")
 tmp2Vcf=$(basename $tmp1Vcf|sed 's/.vcf$/_MISS10.vcf/g')
 outVcf=$(basename $tmp2Vcf|sed 's/.vcf$/_filtered.vcf/g')
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $vcf \
@@ -33,7 +33,7 @@ java -Xmx20g -jar $GATK37 \
 --setFilteredGtToNocall \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T VariantFiltration \
 -R $g1k_ref \
 -V $tmp1Vcf \
@@ -42,7 +42,7 @@ java -Xmx20g -jar $GATK37 \
 --filterName "MISS10" \
 --missingValuesInExpressionsShouldEvaluateAsFailing;
 
-java -Xmx20g -jar $GATK37 \
+java -Xmx4g -jar $GATK37 \
 -T SelectVariants \
 -R $g1k_ref \
 -V $tmp2Vcf \
