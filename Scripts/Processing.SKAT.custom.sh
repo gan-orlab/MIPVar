@@ -2,11 +2,12 @@
 
 BASE_DIR=$1
 gene_list=$2
-cohort=$3
+covar=$3
+cohort=$4
 
 SCRIPT_FOLDER=~/MIPVar/Scripts
 
-bash $SCRIPT_FOLDER/Processing.step12.VariantsSelection.custom.sh $BASE_DIR $cohort
+bash $SCRIPT_FOLDER/Processing.step12.VariantsSelection.custom.sh $BASE_DIR $SCRIPT_FOLDER $covar $cohort
 
 bash $SCRIPT_FOLDER/Processing.step13.RareVarsSubgroups.custom.sh $BASE_DIR $cohort 
 
