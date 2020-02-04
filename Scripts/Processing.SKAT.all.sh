@@ -5,7 +5,7 @@ gene_list=$2
 
 SCRIPT_FOLDER=~/MIPVar/Scripts
 
-bash $SCRIPT_FOLDER/Scripts/Processing.step12.VariantsSelection.all.sh $BASE_DIR
+bash $SCRIPT_FOLDER/Processing.step12.VariantsSelection.all.sh $BASE_DIR
 
 bash $SCRIPT_FOLDER/Processing.step13.RareVarsSubgroups.all.sh $BASE_DIR
 

@@ -2,8 +2,8 @@
 
 gene_list=$2
 BASE_DIR=$1
-co=$3
-script=$4
+co=$4
+script=$3
 
 for gene in $(cat $gene_list);
     do for cohort in $co;
