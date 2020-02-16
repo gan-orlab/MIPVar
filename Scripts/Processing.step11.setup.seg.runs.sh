@@ -37,7 +37,7 @@ process_segregation() {
     seg_results=$(ls -1 $seg_dir/$run_prefix.output)
     last_col=$[$(header $seg_results|awk -F"\t" '$2=="Family members"'|cut -f1)-1]
     paste <(cut -f1-5 $seg_results) <(awk 'BEGIN{FS=OFS="\t"; null="\t\t\t\t\t\t\t"} {if (NR==FNR) {key=$1":"$3":"$4":"$5; value=$2"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12; a[key]=value; next}; if (FNR==1) {print "SNP","NMISS","OR","L95","U95","P","F_A","F_U"; next}; key=$2":"$3":"$4":"$5; if (key in a) {print a[key]} else {print null}}' <(awk 'FNR!=1' $stats) $seg_results) <(cut -f6-$last_col $seg_results) > $final_output_old
-    awk 'BEGIN{FS=OFS="\t"}{if(FNR==NR){gene[$1]=1;next;}if($26 ~ /\|/){split($26,nearest_gene,"|");test=0;for(i in nearest_gene){if(gene[i]>1){$26=gene[i];test=1}}if(test==0){next;}}print;}' $gene_list $final_output_old > $final_output
+    awk 'BEGIN{FS=OFS="\t"}{if(FNR==NR){gene[$1]=1;next;}if($26 ~ /\|/){split($26,nearest_gene,"|");test=0;for(i in nearest_gene){if(gene[i]=1){$26=nearest_gene[i];test=1}}if(test==0){next;}}print;}' $gene_list $final_output_old > $final_output
 }
 
 # set up lists
