@@ -45,6 +45,8 @@ echo "STEP 4 START"
 srun -t 2:0:0 --mem=12G -c 3 parallel 'echo "STEP 4 START DP" {1}; \
     bash {3}/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh {2}"_"GF"{4}"_annotated.vcf {1} 2>&1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
+srun -t 1:0:0 --mem=12G -c 1  bash $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_"GF"$geno"_annotated.vcf 30
+
 echo "STEP 5 START"
 srun -t 0:30:0 --mem=12G -c 3 parallel 'echo "STEP 5 START DP" {1}; \
     bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
