@@ -46,7 +46,7 @@ y<-FAM$Phenotype
 obj<-SKAT_Null_Model(y ~ 1, out_type="D")
 
 out.skato<-SKATBinary.SSD.All(SSD.INFO, obj, method="optimal.adj")
-out.skato.burden<-SKAT.SSD.All(SSD.INFO, obj, method="Burden")
+out.skato.burden<-SKATBinary.SSD.All(SSD.INFO, obj, method="Burden")
 
 write.table(out.skato$results, file=File.Results.SKATO, col.names = TRUE, row.names = FALSE)
 write.table(out.skato.burden$results, file=File.Results.BURDEN, col.names = TRUE, row.names = FALSE)

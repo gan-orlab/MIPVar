@@ -12,8 +12,6 @@ awk 'BEGIN{FS=OFS="\t"}{
     next;
   };
   if ($gene ~ /PARK2/){
-    if($var ~ /stop/ || $var ~ /nonsyn/ || $var ~ /frame/ || $var ~ /intronic_splicing/){
-        print
-    }
+    print
   }
 }' $output

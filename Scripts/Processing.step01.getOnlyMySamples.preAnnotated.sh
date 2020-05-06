@@ -10,7 +10,7 @@
 
 BASE_DIR=$1
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
-vcf=~/runs/eyu8/data/MIPVar/data/MIP.all.split_annotated.vcf
+vcf=~/runs/eyu8/data/MIPVar/data/PD_MIP79/result/all_genes.all_samples.up-to-MIP79_annotated.vcf
 output=$BASE_DIR/$2.vcf
 bed=$3
 sample_list=$4

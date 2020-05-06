@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#100 samples -c 1 --mem=4G -t 0:10:0
 
 REF=${REF:-/lustre03/project/6001220/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta}
 DICT=$(echo $REF|sed 's/fasta/dict/g')
