@@ -10,7 +10,6 @@
 
 BASE_DIR=$1
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
-vcf=~/projects/def-grouleau/COMMON/pipeline_results/mip/PD/variant.calling/all_genes.all_samples.vcf.gz
 output_old=$BASE_DIR/$2.old.vcf
 output=$BASE_DIR/$2.vcf
 bed=$3

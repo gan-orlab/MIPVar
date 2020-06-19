@@ -4,6 +4,8 @@ cohort=$1
 output=$2
 cutoff=${3:-0.01}
 
+#EF is European Freq, AF is ASJ freq, ES is European Sample, AS is ASJ Sample
+
 awk -v cutoff=$cutoff 'BEGIN{FS=OFS="\t"}{
     if (NR==FNR) {sample2cohort[$1]=$6; next};
     if (FNR==1) {
