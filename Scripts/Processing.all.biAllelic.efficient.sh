@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read BASE_DIR gene_list gene_bed output_name sample_list cohort_folder core <<< $@
+read BIG_MAMA_VCF BASE_DIR gene_list gene_bed output_name sample_list cohort_folder core <<< $@
 
 PARAM_BIG=`echo "--mem="$((core*4))"g -c $core -t 2:0:0"`
 PARAM_SMALL="--mem=4g -c 1 -t 2:0:0"
@@ -34,16 +34,16 @@ if [[ -z $core ]]; then echo "ERROR: core (7th arg) not specified"; exit 42; fi
 echo "STEP 0 START"
 bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.sh $BASE_DIR $gene_list 
 echo "STEP 1 START"
-srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core
-srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core
+srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part1.sh $BASE_DIR $output_name $gene_bed $sample_list $core $BIG_MAMA_VCF
+srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part2.sh $BASE_DIR $output_name $gene_bed $sample_list $core $BIG_MAMA_VCF
+srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step01.getOnlyMySamples.noMultiAllele.part3.sh $BASE_DIR $output_name $gene_bed $sample_list $core $BIG_MAMA_VCF
 
 if [[ ! -f $BASE_DIR/$output_name".vcf"  ]]; then echo "ERROR: STEP 1 failed"; exit 42; fi
 echo "STEP 2 START"
 bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 
 echo "STEP 3 START"
 srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF25.vcf" $core $BASE_DIR
-srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF25.vcf" $BASE_DIR
+srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF25.vcf" $core $BASE_DIR
 if [[ ! -f $BASE_DIR/$output_name"_GF25_annotated.vcf"  ]]; then echo "ERROR: STEP 3 failed"; exit 42; fi
 echo "STEP 4 START"
 

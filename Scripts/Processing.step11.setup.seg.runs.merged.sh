@@ -4,7 +4,7 @@
 RUN_DIR=$1
 gene_list=$2
 genes=$(cat $gene_list)
-seg_script=~/runs/eyu8/data/MIPVar/Scripts/generic.seg_command.sh
+seg_script=~/runs/eyu8/soft/MIPVar/Scripts/generic.seg_command.sh
 gatk=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
 REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
 
