@@ -35,14 +35,25 @@ SSD.INFO<-Open_SSD(File.SSD, File.Info)
 SSD.INFO$nSample
 SSD.INFO$nSets
 
-FAM<-Read_Plink_FAM_Cov(File.Fam, File.Cov, Is.binary = TRUE,  cov_header=TRUE)
-y<-FAM$Phenotype
-Age<-FAM$Age
-Sex<-FAM$Sex.y
-Ethn<-FAM$Ethn
-out_type <- "D"
+
+if(file.exists(File.Cov)){
+    message("Analysis with covar")
+    FAM<-Read_Plink_FAM_Cov(File.Fam, File.Cov, Is.binary = TRUE,  cov_header=TRUE)
+    y<-FAM$Phenotype
+    Age<-FAM$Age
+    Sex<-FAM$Sex.y
+    Ethn<-FAM$Ethn
+    out_type <- "D"
  
-obj<-SKAT_Null_Model(y ~ Sex + Age + Ethn, out_type=out_type)
+    obj<-SKAT_Null_Model(y ~ Sex + Age + Ethn, out_type=out_type)
+} else {
+    message("Analysis without covar")
+    FAM<-Read_Plink_FAM(File.Fam, Is.binary = TRUE)
+    y<-FAM$Phenotype
+
+    obj<-SKAT_Null_Model(y ~ 1, out_type="D")
+}
+
 
 out.skato<-SKATBinary.SSD.All(SSD.INFO, obj, method="optimal.adj")
 out.skato.burden<-SKATBinary.SSD.All(SSD.INFO, obj, method="Burden")
