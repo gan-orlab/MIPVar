@@ -61,7 +61,8 @@ then
     covar_name="Sex,Age,Ethn"
 fi
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --logistic hide-covar --update-sex $sex --covar $covar --covar-name $covar_name --ci 0.95 --out $name --output-chr M
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --logistic hide-covar --covar $covar --covar-name Age, Ethn --ci 0.95 --allow-no-sex --out $name --output-chr M
+
 plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --assoc fisher --out $name --output-chr M
 
 cp ${name}_geno10_ind10_hwe_testmiss* $ANALYSIS_DIR/

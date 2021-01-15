@@ -25,7 +25,7 @@ if [[ ! -f $cohort_folder/pheno_$cohort.txt ]]; then echo "ERROR: cohort_folder 
 if [[ ! -f $cohort_folder/$cohort.samples.list ]]; then echo "ERROR: cohort_folder does not $cohort.samples.list"; exit 42; fi
 if [[ -z $core ]]; then echo "ERROR: core (9th arg) not specified"; exit 42; fi
 
-SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
+SCRIPT_FOLDER=~/runs/eyu8/soft/MIPVar/Scripts/
 echo "STEP 0 START"
 bash $SCRIPT_FOLDER/Processing.step00.FolderSetup.merged.sh $BASE_DIR $gene_list $cohort
 
@@ -39,12 +39,12 @@ bash $SCRIPT_FOLDER/Processing.step02.maskCallsLower25GF.sh $output_name.vcf 0.$
 
 echo "STEP 3 START"
 srun $PARAM_BIG $SCRIPT_FOLDER/Processing.step03.annotateVariants.part1.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
-srun --mem=4G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
+srun --mem=12G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVariants.part2.sh $output_name"_GF"$geno".vcf" $core $BASE_DIR
 
 echo "STEP 4 START"
 for dp in 15 30 50;
 do  echo "STEP 4 START DP $dp";
-    srun --mem=4G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
+    srun --mem=8G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
 done
 
 echo "STEP 5 START"
@@ -52,7 +52,7 @@ srun --mem=12G --time=2:0:0 --cpus-per-task=3 parallel 'echo "STEP 5 START DP" {
     bash {3}/Processing.step05.flagBadSamplesAndCreateExclusionList.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_"MISS10_filtered.vcf ;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 6 START"
-srun --mem=4G --time=1:0:0 --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
+srun --mem=12G --time=1:0:0 --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {1}; \
         bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 7 START"

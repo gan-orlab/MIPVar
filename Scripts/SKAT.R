@@ -1,8 +1,7 @@
 #!/usr/bin/env Rscript
-#packrat::init("/home/vrudakov/soft/lib/R-packrat/SKAT")
-packrat::init("~/soft/lib/R-packrat/SKAT")
+packrat::init("~/runs/eyu8/library/SKAT")
 library(SKAT)
-### Parse input variables
+
 require(methods)
 require(Xmisc)
 parser <- ArgumentParser$new()
