@@ -1,7 +1,7 @@
 #!/bin/bash
 
-module load intel/2018.3
 module load vcftools
+module load StdEnv/2020 plink/1.9b_6.21-x86_64
 
 read BASE_DIR gene cohort_name DP cohort_folder<<< $@
 if [[ -z $gene ]]; then echo "ERROR: gene (1st arg) not specified"; exit 42; fi
@@ -41,8 +41,11 @@ plink --bfile $name --exclude ${name}.geno10.snpstoremove --make-bed --allow-no-
 awk 'NR>1 && $6 >0.1{print $1,$2}' ${name}.missingindv.imiss > ${name}.geno10.indvtoremove
 plink --bfile ${name}_geno10 --remove ${name}.geno10.indvtoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10 --output-chr M
 
-plink --bfile ${name}_geno10_ind10 --hardy  --allow-no-sex --out ${name}_geno10_ind10_hwe --output-chr M
-awk 'NR>1 && $9<0.001 {print $2}' ${name}_geno10_ind10_hwe.hwe > ${name}_geno10_ind10_hwe.snpstoremove
+plink --bfile ${name}_geno10_ind10 --maf 0.05 --filter-controls --make-bed --out ${name}_geno10_ind10_common
+plink --bfile ${name}_geno10_ind10_common --hardy  --allow-no-sex --out ${name}_geno10_ind10_hwe --output-chr M
+awk '$9<0.001 {print $2}' ${name}_geno10_ind10_hwe.hwe > ${name}_geno10_ind10_hwe.snpstoremove
+
+
 plink --bfile ${name}_geno10_ind10 --exclude ${name}_geno10_ind10_hwe.snpstoremove --make-bed --allow-no-sex --out ${name}_geno10_ind10_hwe --output-chr M
 
 
@@ -61,7 +64,7 @@ then
     covar_name="Sex,Age,Ethn"
 fi
 
-plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --logistic hide-covar --covar $covar --covar-name Age, Ethn --ci 0.95 --allow-no-sex --out $name --output-chr M
+plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --logistic hide-covar --covar $covar --covar-name Age, Sex --ci 0.95 --allow-no-sex  --out $name --output-chr M
 
 plink --bfile ${name}_geno10_ind10_hwe_testmiss --a2-allele $BASE_DIR/$gene/$cohort_name/${DP}x/REF_ALLELE.txt --assoc fisher --out $name --output-chr M
 

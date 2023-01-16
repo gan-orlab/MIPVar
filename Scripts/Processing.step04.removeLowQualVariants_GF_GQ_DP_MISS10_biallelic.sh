@@ -8,8 +8,8 @@
 read vcf DPcutoff <<< $@
 
 # set constants
-g1k_ref=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
-GATK37=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
+g1k_ref=~/runs/go_lab/Reference/human_g1k_v37.fasta
+GATK37=/lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
 ANcutoff=$(head -1000 $vcf|grep CHROM|cut -f10-|wc -w|awk '{print int(2*$1*0.9)}')
 
 # check inputs are ok
@@ -66,6 +66,3 @@ java -Xmx4g -jar $GATK37 \
 -o $outVcf \
 -env \
 --restrictAllelesTo BIALLELIC;
-
-
-

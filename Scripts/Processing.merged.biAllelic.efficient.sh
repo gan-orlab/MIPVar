@@ -2,6 +2,8 @@
 
 read BIG_MAMA_VCF BASE_DIR gene_list gene_bed output_name sample_list geno cohort cohort_folder core <<< $@
 
+module load java/1.8
+
 PARAM_BIG=`echo "--mem="$((core*4))"g -c $core -t 2:0:0"`
 PARAM_SMALL="--mem=4g -c 1 -t 2:0:0"
 PARAM_MID="--mem=12g -c 3 -t 2:0:0"
@@ -22,7 +24,7 @@ if [[ -z $cohort_folder ]]; then echo "ERROR: cohort_folder (8th arg) not specif
 if [[ ! -f $cohort_folder/covar_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain covar_$cohort.txt"; exit 42; fi
 if [[ ! -f $cohort_folder/sex_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain sex_$cohort.txt"; exit 42; fi
 if [[ ! -f $cohort_folder/pheno_$cohort.txt ]]; then echo "ERROR: cohort_folder does not contain pheno_$cohort.txt"; exit 42; fi
-if [[ ! -f $cohort_folder/$cohort.samples.list ]]; then echo "ERROR: cohort_folder does not $cohort.samples.list"; exit 42; fi
+if [[ ! -f $cohort_folder/$cohort.samples.list ]]; then echo "ERROR: cohort_folder does not contain $cohort.samples.list"; exit 42; fi
 if [[ -z $core ]]; then echo "ERROR: core (9th arg) not specified"; exit 42; fi
 
 SCRIPT_FOLDER=~/runs/eyu8/soft/MIPVar/Scripts/
@@ -44,7 +46,7 @@ srun --mem=12G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step03.annotateVarian
 echo "STEP 4 START"
 for dp in 15 30 50;
 do  echo "STEP 4 START DP $dp";
-    srun --mem=8G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
+    srun --mem=8G --time=2:0:0 -c 1 $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF"$geno"_annotated.vcf" $dp ;
 done
 
 echo "STEP 5 START"
@@ -69,4 +71,4 @@ srun $PARAM_BIG parallel 'echo "STEP 10 START DP" {1} "COHORT" {2} "GENE" {3}; \
         bash {4}/Processing.step10.finalSelection.sh {5} {3} {2} {1} 1;' ::: 15 30 50 ::: $cohort ::: $(cat $gene_list) ::: $SCRIPT_FOLDER ::: $BASE_DIR
 
 echo "STEP 11 START"
-srun --mem=12G --time=1:0:0 --cpus-per-task=3 $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.sh $BASE_DIR $gene_list $cohort
+srun --mem=60G --time=12:0:0 --cpus-per-task=3 $SCRIPT_FOLDER/Processing.step11.setup.seg.runs.merged.sh $BASE_DIR $gene_list $cohort

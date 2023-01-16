@@ -4,7 +4,7 @@
 
 REF=${REF:-/lustre03/project/6001220/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta}
 DICT=$(echo $REF|sed 's/fasta/dict/g')
-module load gatk/3.8 picard
+module load nixpkgs/16.09 gatk/3.8 picard
 module load tabix
 GVCF_LIST=$1
 BED=$2

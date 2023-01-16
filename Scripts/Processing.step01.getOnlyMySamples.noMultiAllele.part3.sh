@@ -9,14 +9,14 @@
 
 
 BASE_DIR=$1
-REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
+REF=~/runs/go_lab/Reference/human_g1k_v37.fasta
 output_old=$BASE_DIR/$2.old.vcf
 output=$BASE_DIR/$2.vcf
 bed=$3
 sample_list=$4
 core=$5
 mem=`echo "-Xmx"$((4*core))g`
-java $mem -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V split.vcf -o $output -sf $sample_list -env -nt $core --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES
+java $mem -jar /lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V split.vcf -o $output -sf $sample_list -env -nt $core --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES
 
 #gatk command switches, explained:
 # -T = which gatk algorithm to use

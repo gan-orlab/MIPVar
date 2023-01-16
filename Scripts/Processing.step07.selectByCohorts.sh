@@ -14,11 +14,11 @@ if [[ ! -s $vcf ]]; then echo "ERROR: input vcf (1st arg) not specified, empty o
 if [[ -z $DP || ! $DP -gt 0 ]]; then echo "ERROR: cohort name (3rd arg) not specified"; exit 42; fi
 if [[ -z $cohort_name ]]; then echo "ERROR: cohort name (3rd arg) not specified"; exit 42; fi
 
-REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
+REF=~/runs/go_lab/Reference/human_g1k_v37.fasta
 
 sample_list=$DIR/$cohort_name.samples.list
 output=$cohort_name.DP$DP.all.genes.vcf
 mem=`echo "-Xmx"$((core*4))g`
-java $mem -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -sf $sample_list -env --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES -nt $core
+java $mem -jar /lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output -sf $sample_list -env --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES -nt $core
 
 #for cohort in FC NY ISR; do bash ../Scripts/Processing.step07.selectByCohorts.sh PD_familial_genes_except_GBA_AllSamples_GF25_annotated_GQ30_DP30_MISS10_filtered_cleaned.vcf $cohort 30; done

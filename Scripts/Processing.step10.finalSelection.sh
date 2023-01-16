@@ -7,11 +7,13 @@ if [[ -z $DP || ! $DP -gt 0 ]]; then echo "ERROR: depth (4nd arg) not specified"
 if [[ -z $cohort_name ]]; then echo "ERROR: cohort name (3rd arg) not specified"; exit 42; fi
 if [[ -z $core || ! $core -gt 0 ]]; then echo "ERROR: depth (5nd arg) not specified"; exit 42; fi
 
-REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
-GATK37=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
+REF=~/runs/go_lab/Reference/human_g1k_v37.fasta
+GATK37=/lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
 
 #INTERVALS=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}.final.intervals
 INTERVALS=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}_geno10_ind10_hwe_testmiss.vcf
+BIM=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}_geno10_ind10_hwe_testmiss.bim
+VARIANTS_TO_KEEP=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/variants.tokeep
 SAMPLE_LIST=$BASE_DIR/$gene/$cohort_name/${DP}x/${gene}_${cohort_name}_DP${DP}.geno10.indvtoremove
 vcf=$BASE_DIR/$gene/$cohort_name/${DP}x/$gene.$cohort_name.DP$DP.vcf
 NO_SAMPLE=0
@@ -22,7 +24,9 @@ if [[ ! -s $vcf ]]; then echo "ERROR: input vcf empty or does not exist; name sh
 temp=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.temp.vcf
 output=$BASE_DIR/$gene/$cohort_name/${DP}x/analysis/$gene.$cohort_name.DP$DP.final.vcf
 
-java -Xmx4g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $temp -L $INTERVALS -env -nt $core 
+awk '{print $2}' $BIM > $VARIANTS_TO_KEEP
+
+java -Xmx4g -jar $GATK37 -T SelectVariants -R $REF -V $vcf -o $temp -L $INTERVALS -env -nt $core -IDs $VARIANTS_TO_KEEP
 
 cp $temp $output
 

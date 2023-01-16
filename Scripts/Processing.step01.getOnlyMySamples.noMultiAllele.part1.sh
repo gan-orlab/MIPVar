@@ -4,12 +4,12 @@
 #REF will be taken from Dan's directory
 #vcf will be the file containing all our sequencing data (I prefer using the file without annotation, it's lighter this way; we will annotate later)
 #output name your file
-#bed contains the coordinates of all the genes (regions) of interest to be extracted 
+#bed contains the coordinates of all the genes (regions) of interest to be extracted
 #sample_list containts the list of all the samples to be extracted (all cohorts together)
 
 
 BASE_DIR=$1
-REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
+REF=~/runs/go_lab/Reference/human_g1k_v37.fasta
 vcf=$6
 output_old=$BASE_DIR/$2.old.vcf
 output=$BASE_DIR/$2.vcf
@@ -17,7 +17,7 @@ bed=$3
 sample_list=$4
 core=$5
 mem=`echo "-Xmx"$((4*core))g`
-java $mem -jar ~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output_old -L $bed -sf $sample_list -env -nt $core --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES
+java $mem -jar /lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar -T SelectVariants -R $REF -V $vcf -o $output_old -L $bed -sf $sample_list -env -nt $core --ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES
 
 
 #gatk command switches, explained:

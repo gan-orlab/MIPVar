@@ -15,11 +15,11 @@ mem=`echo "-Xmx"$((4*core))g`
 if [[ ! -s $vcf ]]; then echo "ERROR: vcf (1st arg) not specified, empty or does not exist"; exit 42; fi
 
 BASE_DIR=$3
-GATK37=~/projects/def-grouleau/COMMON/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
-REF=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/data/reference/human_g1k_v37.fasta
-DBSNP=~/projects/def-grouleau/COMMON/runs/vrudakov/Thesis/35genes//Homo_sapiens.GRCh37.dbSNP150.vcf.gz
-vcf2annovar=~/projects/def-grouleau/COMMON/soft/src/pipeline_exome.svn/soft/packages/VarAnnot/vcf2annovar.pl
-annotation_list=~/projects/def-grouleau/COMMON/runs/vrudakov/Thesis/35genes/annotations.to.include
+GATK37=/lustre03/project/6004655/COMMUN/soft/lib/java/GATK/GenomeAnalysisTK-3.8/dist/GenomeAnalysisTK.jar
+REF=~/runs/go_lab/Reference/human_g1k_v37.fasta
+DBSNP=/lustre03/project/6004655/COMMUN/runs/vrudakov/Thesis/35genes//Homo_sapiens.GRCh37.dbSNP150.vcf.gz
+vcf2annovar=/lustre03/project/6004655/COMMUN/soft/src/pipeline_exome.svn/soft/packages/VarAnnot/vcf2annovar.pl
+annotation_list=/lustre03/project/6004655/COMMUN/runs/vrudakov/Thesis/35genes/annotations.to.include
 
 vcf_dbsnp=$(echo $vcf|sed 's/.vcf$/_dbSNP.vcf/g')
 vcf_annovar=$(echo $vcf_dbsnp|sed 's/.vcf$/_annovar.vcf/g')

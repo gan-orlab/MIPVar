@@ -6,7 +6,7 @@ PARAM_BIG=`echo "--mem="$((core*4))"g -c $core -t 2:0:0"`
 PARAM_SMALL="--mem=4g -c 1 -t 2:0:0"
 PARAM_MID="--mem=12g -c 3 -t 2:0:0"
 
-SCRIPT_FOLDER=~/runs/eyu8/data/MIPVar/Scripts
+SCRIPT_FOLDER=~/runs/eyu8/soft/MIPVar/Scripts
 
 if [[ -z $BASE_DIR ]]; then echo "ERROR: BASE_DIR (1st arg) not specified"; exit 42; fi
 if [[ -z $gene_list ]]; then echo "ERROR: gene_list (2nd arg) not specified"; exit 42; fi
@@ -26,9 +26,9 @@ if [[ ! -f $cohort_folder/sex_ISR.txt ]]; then echo "ERROR: cohort_folder does n
 if [[ ! -f $cohort_folder/pheno_FC.txt ]]; then echo "ERROR: cohort_folder does not contain pheno_FC.txt"; exit 42; fi
 if [[ ! -f $cohort_folder/pheno_NY.txt ]]; then echo "ERROR: cohort_folder does not contain pheno_NY.txt"; exit 42; fi
 if [[ ! -f $cohort_folder/pheno_ISR.txt ]]; then echo "ERROR: cohort_folder does not contain pheno_ISR.txt"; exit 42; fi
-if [[ ! -f $cohort_folder/FC.samples.list ]]; then echo "ERROR: cohort_folder does not FC.samples.list"; exit 42; fi
-if [[ ! -f $cohort_folder/NY.samples.list ]]; then echo "ERROR: cohort_folder does not NY.samples.list"; exit 42; fi
-if [[ ! -f $cohort_folder/ISR.samples.list ]]; then echo "ERROR: cohort_folder does not ISR.samples.list"; exit 42; fi
+if [[ ! -f $cohort_folder/FC.samples.list ]]; then echo "ERROR: cohort_folder does not contain FC.samples.list"; exit 42; fi
+if [[ ! -f $cohort_folder/NY.samples.list ]]; then echo "ERROR: cohort_folder does not contain NY.samples.list"; exit 42; fi
+if [[ ! -f $cohort_folder/ISR.samples.list ]]; then echo "ERROR: cohort_folder does not contain ISR.samples.list"; exit 42; fi
 if [[ -z $core ]]; then echo "ERROR: core (7th arg) not specified"; exit 42; fi
 
 echo "STEP 0 START"
@@ -49,7 +49,7 @@ echo "STEP 4 START"
 
 for dp in 15 30 50;
     do  echo "STEP 4 START DP $dp";
-    srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10_biallelic.sh $output_name"_GF25_annotated.vcf" $dp ;
+    srun $PARAM_SMALL $SCRIPT_FOLDER/Processing.step04.removeLowQualVariants_GF_GQ_DP_MISS10.sh $output_name"_GF25_annotated.vcf" $dp ;
 done
 
 echo "STEP 5 START"

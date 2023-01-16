@@ -5,7 +5,7 @@
 if [[ -z $run ]]; then echo "ERROR: you must include run as -v variable to qsub"; exit 42; fi
 if [[ -z $VCF_LIST ]]; then echo "ERROR: you must inclue VCF_LIST (whitespace-separated, in quotes) as -v variable to qsub"; exit 42; fi
 
-~/projects/def-grouleau/COMMON/soft/src.links/segregation_vcf \
+/lustre03/project/6004655/COMMUN/soft/src.links/segregation_vcf \
   --proband-var-reads 3 \
   --proband-coverage 6 \
   --proband-mutfreq 0.15 \
