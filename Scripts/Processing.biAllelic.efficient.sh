@@ -58,7 +58,7 @@ srun --mem=12G --time=1:0:0 --cpus-per-task=3 parallel 'echo "STEP 6 START DP" {
         bash {3}/Processing.step06.excludeBadSamples.sh {2}"_GF{4}_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf" {2}"_GF25_annotated_GQ30_DP"{1}"_MISS10_filtered.vcf.10PercentShitSamplesToExclude" 1;' ::: 15 30 50 ::: $output_name ::: $SCRIPT_FOLDER ::: $geno
 
 echo "STEP 7 START"
-srun --mem=12G --time=1:0:0 --account=rrg-grouleau-ac --cpus-per-task=3 parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
+srun --mem=12G --time=1:0:0 --cpus-per-task=3 parallel 'echo "STEP 7 START DP" {1} "COHORT" {2}; \
         bash {4}/Processing.step07.selectByCohorts.sh {3}"_GF{6}_annotated_GQ30_DP"{1}"_MISS10_filtered_cleaned.vcf" {2} {1} {5} 1;' ::: 15 30 50 ::: $cohort ::: $output_name ::: $SCRIPT_FOLDER ::: $cohort_folder ::: $geno
 
 echo "STEP 8 START"
